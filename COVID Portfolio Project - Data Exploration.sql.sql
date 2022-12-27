@@ -91,7 +91,7 @@ ORDER BY 2,3
 -- Using CTE to perform Calculation on Partition By in previous query
 
 WITH PopvsVac (continent, location, date, population, new_vaccinations, RollingPeopleVaccinated) 
-as 
+AS 
 (
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
 , SUM(CAST(vac.new_vaccinations as float)) OVER (Partition by dea.location ORDER BY dea.location,
