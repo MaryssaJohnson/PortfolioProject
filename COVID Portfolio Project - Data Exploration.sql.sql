@@ -84,7 +84,7 @@ SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinatio
 FROM PortfolioProject1.coviddeaths dea
 JOIN PortfolioProject1.covidvaccinations vac
 	ON dea.location = vac.location
-    and dea.date = vac.date
+        AND dea.date = vac.date
 WHERE dea.continent is not null
 ORDER BY 2,3
 
@@ -99,7 +99,7 @@ SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinatio
 FROM PortfolioProject1.coviddeaths dea
 JOIN PortfolioProject1.covidvaccinations vac
 	ON dea.location = vac.location
-    and dea.date = vac.date
+        and dea.date = vac.date
 WHERE dea.continent is not null
 -- ORDER BY 2,3
 )
@@ -109,10 +109,9 @@ FROM PopvsVac
 
 -- Using Temp Table to perform Calculation on Partition By in previous query
 
-DROP TABLE if exists PercentPopulationVaccinated
-USE PortfolioProject1;
 
-CREATE TABLE PercentPopulationVaccinated 
+DROP TABLE if exists #PercentPopulationVaccinated
+CREATE TABLE #PercentPopulationVaccinated
 (
 Continent nvarchar(255),
 Location nvarchar(255), 
@@ -122,8 +121,21 @@ New_vaccinations numeric,
 RollingPeopleVaccinated numeric
 )
 
+INSERT INTO #PercentPopulationVaccinated
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+, SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingPeopleVaccinated
+--, (RollingPeopleVaccinated/population)*100
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+--WHERE dea.continent is not null 
+--ORDER BY 2,3
+
 SELECT *, (RollingPeopleVaccinated/population)*100
-FROM PercentPopulationVaccinated
+FROM #PercentPopulationVaccinated
+
+
 
 -- -- Creating View to store for later visualizations
 CREATE VIEW PercentPopulationVaccinated 
@@ -134,7 +146,7 @@ SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinatio
 FROM PortfolioProject1.coviddeaths dea
 JOIN PortfolioProject1.covidvaccinations vac
 	ON dea.location = vac.location
-    and dea.date = vac.date
+        AND dea.date = vac.date
 WHERE dea.continent is not null;
 -- ORDER BY 2,3
 
