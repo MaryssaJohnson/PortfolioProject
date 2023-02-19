@@ -1,7 +1,10 @@
  Using SQL String Functions to Clean Data
-
-
--- Task One: 
+ * Skills used: LENGTH, LEFT, RIGHT, UPPER, LOWER, REPLACE, TRIM, RTRIM, LTRIM,  Concatenation,   SUBSTRING, String Aggregation, and COALESCE *
+ 
+ ------------------------------------------
+ 
+ 
+ -- Task One: 
 Creating new tables; the customers
 -- and sales tables in the database
 #############################
